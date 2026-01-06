@@ -14,7 +14,7 @@ public class KnifeController : WeaponController
     protected override void Attack()
     {
         base.Attack();
-        GameObject spawnKnife = Instantiate(prefabs);
+        GameObject spawnKnife = Instantiate(weaponData.Prefab);
         spawnKnife.transform.position = transform.position;
         // 플레이어가 마지막으로 바라본 방향으로 칼 발사
         spawnKnife.GetComponent<KnifeBehaviour>().DirectionsChecker(pm.MoveDir);

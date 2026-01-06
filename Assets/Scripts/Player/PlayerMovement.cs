@@ -7,8 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     //Movement speed of the player
-    public float moveSpeed;
-    Rigidbody2D rb;
+
     [HideInInspector]
     public float lastHorizontalVector;
     [HideInInspector]
@@ -18,9 +17,13 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector]
     public Vector2 lastMovedVector;
 
+    Rigidbody2D rb;
+    //public CharacterScriptableObject characterData;
+    PlayerStats player;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        player = GetComponent<PlayerStats>();
         lastMovedVector = new Vector2(1f, 0f);
     }
 
@@ -64,6 +67,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        rb.linearVelocity = new Vector2(MoveDir.x * moveSpeed, MoveDir.y * moveSpeed);
+        rb.linearVelocity = new Vector2(MoveDir.x * player.currentMoveSpeed, MoveDir.y * player.currentMoveSpeed);
     }
 }

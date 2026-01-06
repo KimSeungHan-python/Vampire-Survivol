@@ -15,7 +15,7 @@ public class GarlicController : WeaponController
     protected override void Attack()
     {
         base.Attack();
-        GameObject spawnGarlic = Instantiate(prefabs);
+        GameObject spawnGarlic = Instantiate(weaponData.Prefab);
         spawnGarlic.transform.position = transform.position;
         spawnGarlic.transform.parent = transform;
         // 플레이어가 마지막으로 바라본 방향으로 마늘 발사
