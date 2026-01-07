@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;  
+using System.Collections;
+
 public class PlayerStats : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public CharacterScriptableObject characterData;
+    CharacterScriptableObject characterData;
     [HideInInspector]
     public float currentHealth;
     [HideInInspector]
@@ -18,6 +19,10 @@ public class PlayerStats : MonoBehaviour
 
     [HideInInspector]
     public float currentMagnet;
+    //Spawned Weapon
+    public List<GameObject> spawnedWeapons;
+
+
     //experience and level system can be added later
     [Header("Experience/Level")]
     public int experience =0;
@@ -43,12 +48,18 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
+        characterData = CharacterSelector.GetData();
+        CharacterSelector.instance.DestroySingleton();
+
         currentHealth = characterData.MaxHealth;
         currentMight = characterData.Might;
         currentProjectileSpeed = characterData.ProjectileSpeed;
         currentMoveSpeed = characterData.MoveSpeed;
         currentRecovery = characterData.Recovery;
         currentMagnet = characterData.Magnet;
+
+        //Start the starting weapons
+        SpawnWeapon(characterData.StartingWeapon);
     }
 
     void Start()
@@ -138,5 +149,12 @@ public class PlayerStats : MonoBehaviour
                 currentHealth = characterData.MaxHealth;
             }
         }
+    }
+
+    public void SpawnWeapon(GameObject weapon)
+    {
+        GameObject spawnWeapon = Instantiate(weapon, transform.position, Quaternion.identity);
+        spawnWeapon.transform.SetParent(transform); // Set the weapon as a child of the player
+        spawnedWeapons.Add(spawnWeapon); // Add it to the list of spawned weapons
     }
 }

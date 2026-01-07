@@ -119,6 +119,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &171296937
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 171296939}
+  - component: {fileID: 171296938}
+  m_Layer: 0
+  m_Name: Enemy Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &171296938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171296937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f79463c580743a4e8f0df0cab82fa48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  waves: []
+--- !u!4 &171296939
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171296937}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -355,51 +400,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &661544892
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 661544893}
-  - component: {fileID: 661544894}
-  m_Layer: 0
-  m_Name: Knife Controller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &661544893
+--- !u!4 &661544893 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+  m_PrefabInstance: {fileID: 8384361320366774626}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 661544892}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 738295966}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &661544894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 661544892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 728b875cf8d509a4b8c454951c268975, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KnifeController
-  weaponData: {fileID: 11400000, guid: 61ccfb4249426fe49b7dcae747ed0b0b, type: 2}
 --- !u!1 &738295962
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,13 +641,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d435a2185e2f5d24385c97b858b5dcc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  characterData: {fileID: 11400000, guid: eb24c7de9efa0d348aafca4f3fcc2aa9, type: 2}
   currentHealth: 0
   currentMight: 0
   currentProjectileSpeed: 0
   currentMoveSpeed: 0
   currentRecovery: 0
   currentMagnet: 0
+  spawnedWeapons: []
   experience: 0
   level: 1
   experienceCap: 0
@@ -714,51 +719,11 @@ MonoBehaviour:
   - {fileID: 6519328805828529957, guid: b0c0269c49176564889df48bf0301b81, type: 3}
   maxOpDist: 50
   optimizerCooldowndur: 1
---- !u!1 &1094828450
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1094828451}
-  - component: {fileID: 1094828452}
-  m_Layer: 0
-  m_Name: Garlic Controller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1094828451
+--- !u!4 &1094828451 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+  m_PrefabInstance: {fileID: 7367735254560826910}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094828450}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 738295966}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1094828452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094828450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea03eb898545a7041b18a9153b0f0f68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GarlicController
-  weaponData: {fileID: 11400000, guid: 0b4240251bf66654cb757060400b1033, type: 2}
 --- !u!1 &1316209585
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,6 +1034,120 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b41f2d87c72dbcf43a59192d191ee83e, type: 3}
+--- !u!1001 &7367735254560826910
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 738295966}
+    m_Modifications:
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4293321885166893179, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6132183845058340722, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+      propertyPath: m_Name
+      value: Garlic Controller
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b5d098264a1785b4a8aff3b86feed91c, type: 3}
+--- !u!1001 &8384361320366774626
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 738295966}
+    m_Modifications:
+    - target: {fileID: 6754425657280140407, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_Name
+      value: Knife Controller
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7413078470981003680, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 86692b37569c1c24f91c8aa489d35dd9, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1080,3 +1159,4 @@ SceneRoots:
   - {fileID: 810281185}
   - {fileID: 2066646160}
   - {fileID: 5808524671027699104}
+  - {fileID: 171296939}
