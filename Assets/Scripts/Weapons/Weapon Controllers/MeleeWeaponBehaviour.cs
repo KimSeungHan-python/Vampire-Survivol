@@ -20,23 +20,29 @@ public class MeleeWeaponBehaviour : MonoBehaviour
         currentPierce = weaponData.Pierce;
     }
 
+    public float GetCurrentDamage()
+    {
+        return currentDamage = currentDamage * FindObjectOfType<PlayerStats>().currentMight;
+    }
+
     protected virtual void Start()
     {
         Destroy(gameObject, destroyAfterSeconds);   
     }
 
+
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Enemy"))
         {
-            collision.GetComponent<EnemyStats>().TakeDamage(currentDamage);
+            collision.GetComponent<EnemyStats>().TakeDamage(GetCurrentDamage());
             //추가 효과들 여기에
         }
         else if(collision.CompareTag("Prop"))
         {
             if(collision.gameObject.TryGetComponent(out BreakableProps breakable))
             {
-                breakable.TakeDamage(currentDamage);
+                breakable.TakeDamage(GetCurrentDamage());
             }
         }
     }

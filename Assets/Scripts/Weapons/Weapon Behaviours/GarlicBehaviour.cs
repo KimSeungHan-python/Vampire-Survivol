@@ -17,7 +17,7 @@ public class GarlicBehaviour : MeleeWeaponBehaviour
     {
         if(collision.CompareTag("Enemy") && !markedEnemies.Contains(collision.gameObject))
         {
-            collision.GetComponent<EnemyStats>().TakeDamage(currentDamage);
+            collision.GetComponent<EnemyStats>().TakeDamage(GetCurrentDamage());
             markedEnemies.Add(collision.gameObject);// 추가적인 피해 방지를 위해
         
             //추가 효과들 여기에
@@ -27,7 +27,7 @@ public class GarlicBehaviour : MeleeWeaponBehaviour
         {
             if(collision.gameObject.TryGetComponent(out BreakableProps breakable))
             {
-                breakable.TakeDamage(currentDamage);
+                breakable.TakeDamage(GetCurrentDamage());
                 markedEnemies.Add(collision.gameObject);// 추가적인 피해 방지를 위해
             }
         }
