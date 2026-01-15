@@ -38,6 +38,11 @@ public class PlayerMovement : MonoBehaviour
     }
     void InputManagement()
     {
+        if(GameManager.instance.isGameOver)
+        {
+            return;
+        }
+
         Vector2 input = Keyboard.current != null 
             ? new Vector2(
                 (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed ? 1 : 0) - 
@@ -67,6 +72,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        rb.linearVelocity = new Vector2(MoveDir.x * player.currentMoveSpeed, MoveDir.y * player.currentMoveSpeed);
+        if(GameManager.instance.isGameOver)
+        {
+            return;
+        }
+
+        rb.linearVelocity = new Vector2(MoveDir.x * player.CurrentMoveSpeed, MoveDir.y * player.CurrentMoveSpeed);
     }
 }

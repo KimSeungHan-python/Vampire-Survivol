@@ -1,9 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.UI;
+using TMPro;
+using System.Reflection;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
     public enum GameState
     {
         Gameplay,
@@ -15,13 +19,42 @@ public class GameManager : MonoBehaviour
 
     public GameState previousState;
 
-    [Header("UI")]
+    [Header("Screens")]
     public GameObject pauseScreen;
+    public GameObject resultsScreen;
+
+    [Header("Current Stats Display")]
+    //Current stat displays
+    public TextMeshProUGUI currentHealthDisplay;
+    public TextMeshProUGUI currentMightDisplay;
+    public TextMeshProUGUI currentMoveSpeedDisplay;
+    public TextMeshProUGUI currentProjectileSpeedDisplay;
+    public TextMeshProUGUI currentRecoveryDisplay;
+    public TextMeshProUGUI currentMagnetDisplay;
+    //Flag to check if the game is over
+    public bool isGameOver = false;
+
+    [Header("Results screen Display")]
+    public Image chosenCharacterImage;
+    public TextMeshProUGUI chosenCharacterName;
+    public TextMeshProUGUI levelReachedDisplay;
+
+    public List<Image> chosenWeaponUI = new List<Image>(6);
+    public List<Image> chosenPassiveItemUI = new List<Image>(6);
 
     void Awake()
     {
+        if(instance == null)
+        {
+            instance = this;
+            //DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         DisableScreens();
-        currentState = GameState.Gameplay;
+        //currentState = GameState.Gameplay;
     }
     void Update()
     {
@@ -34,6 +67,14 @@ public class GameManager : MonoBehaviour
                 //Code for the paused state
                 break;
             case GameState.GameOver:
+                if(!isGameOver)
+                {
+                    isGameOver = true;
+                    Time.timeScale = 0f; // Freeze the game
+                    Debug.Log("Game Over!");
+                    DisplayResults();
+                    // Implement additional game over logic here (e.g., show game over screen, stop player movement, etc.)
+                }   
                 //Code for the game over state
                 break;
         }
@@ -70,5 +111,65 @@ public class GameManager : MonoBehaviour
     void DisableScreens()
     {
         pauseScreen.SetActive(false);
-    }   
+        resultsScreen.SetActive(false);
+    }
+
+    public void GameOver()
+    {
+        ChangeState(GameState.GameOver);
+    }
+
+    void DisplayResults()
+    {
+        resultsScreen.SetActive(true);
+        // Populate results screen with relevant data (e.g., score, stats, etc.)
+    }
+
+    public void AssignChosenCharacterUI(CharacterScriptableObject characterData)
+    {
+        chosenCharacterImage.sprite = characterData.Icon;
+        chosenCharacterName.text = characterData.Name;
+    }
+
+    public void AssignLevelReachedUI(int levelReachedData)
+    {
+        levelReachedDisplay.text = levelReachedData.ToString();
+    }
+
+    public void AssignChosenWeaponAndPassiveItemUI(List<Image> chosenWeaponUIData, List<Image> chosenPassiveItemUIData)
+    {
+        if(chosenWeaponUIData.Count != chosenWeaponUI.Count || chosenPassiveItemUIData.Count != chosenPassiveItemUI.Count)
+        {
+            Debug.LogError("Mismatch in UI list sizes!");
+            return;
+        }
+        for(int i = 0; i < chosenWeaponUIData.Count; i++)
+        {
+            if(chosenWeaponUI[i].sprite)
+            {
+                chosenWeaponUIData[i].enabled = true;
+                chosenWeaponUIData[i].sprite = chosenWeaponUI[i].sprite;
+                
+            }
+            else
+            {
+                chosenWeaponUIData[i].enabled = false;
+            }
+        }
+        for(int i = 0; i < chosenPassiveItemUIData.Count; i++)
+        {
+            if(chosenPassiveItemUI[i].sprite)
+            {
+                chosenPassiveItemUIData[i].enabled = true;
+                chosenPassiveItemUIData[i].sprite = chosenPassiveItemUI[i].sprite;
+                
+            }
+            else
+            {
+                chosenPassiveItemUIData[i].enabled = false;
+            }
+        }
+
+
+    }
 }

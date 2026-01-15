@@ -16,9 +16,9 @@ public class PlayerCollector : MonoBehaviour
         playerCollider = GetComponent<CircleCollider2D>();
     }
 
-    void update()
+    void Update()
     {
-        playerCollider.radius = player.currentMagnet;
+        playerCollider.radius = player.CurrentMagnet;
     }
 
     void OnTriggerEnter2D(Collider2D other)
