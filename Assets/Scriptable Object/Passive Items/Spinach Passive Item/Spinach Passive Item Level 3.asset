@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e235467a4e8fa3247a92fdfd263f9999, type: 3}
-  m_Name: Spinach Passive Item Level2
+  m_Name: Spinach Passive Item Level 3
   m_EditorClassIdentifier: Assembly-CSharp::PassiveItemScriptableObject
   multipler: 30
   level: 0

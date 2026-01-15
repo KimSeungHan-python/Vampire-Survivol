@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: Wings Passive Item Level2
   m_EditorClassIdentifier: Assembly-CSharp::PassiveItemScriptableObject
   multipler: 50
+  level: 0
+  nextLevelPrefab: {fileID: 4895310521498836236, guid: be221b10d35dfcc4091c2540b2d7f5c3, type: 3}
+  name: 
+  description: 
+  icon: {fileID: 0}

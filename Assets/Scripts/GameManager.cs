@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour
     {
         Gameplay,
         Paused,
-        GameOver
+        GameOver,
+        LevelUp
     }
 
     public GameState currentState;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
     [Header("Screens")]
     public GameObject pauseScreen;
     public GameObject resultsScreen;
+    public GameObject levelUpScreen;
 
     [Header("Current Stats Display")]
     //Current stat displays
@@ -34,13 +36,24 @@ public class GameManager : MonoBehaviour
     //Flag to check if the game is over
     public bool isGameOver = false;
 
+    //Flag to check if the player is choosing their upgrades
+    public bool choosingUpgrade;
+
+    public GameObject playerObject;
+
     [Header("Results screen Display")]
     public Image chosenCharacterImage;
     public TextMeshProUGUI chosenCharacterName;
     public TextMeshProUGUI levelReachedDisplay;
+    public TextMeshProUGUI timeSurvivedDisplay;
 
     public List<Image> chosenWeaponUI = new List<Image>(6);
     public List<Image> chosenPassiveItemUI = new List<Image>(6);
+
+    [Header("Stopwatch")]
+    public float timelimit; // The tiem limit in seconds
+    float stoptwatchTime;
+    public TextMeshProUGUI stopwatchDisplay;
 
     void Awake()
     {
@@ -61,6 +74,7 @@ public class GameManager : MonoBehaviour
         switch (currentState)
         {
             case GameState.Gameplay:
+                UpdateStopwatch();
                 //Code for the gameplay state
                 break;
             case GameState.Paused:
@@ -76,6 +90,16 @@ public class GameManager : MonoBehaviour
                     // Implement additional game over logic here (e.g., show game over screen, stop player movement, etc.)
                 }   
                 //Code for the game over state
+                break;
+            case GameState.LevelUp:
+                if(!choosingUpgrade)
+                {
+                    choosingUpgrade = true;
+                    Time.timeScale = 0f; // Freeze the game
+                    levelUpScreen.SetActive(true);
+                    Debug.Log("Level Up! Choose your upgrade.");
+                    // Implement additional level up logic here (e.g., show level up screen, pause game, etc.)
+                }                
                 break;
         }
     }
@@ -112,10 +136,12 @@ public class GameManager : MonoBehaviour
     {
         pauseScreen.SetActive(false);
         resultsScreen.SetActive(false);
+        levelUpScreen.SetActive(false);
     }
 
     public void GameOver()
     {
+        timeSurvivedDisplay.text = stopwatchDisplay.text;
         ChangeState(GameState.GameOver);
     }
 
@@ -171,5 +197,37 @@ public class GameManager : MonoBehaviour
         }
 
 
+    }
+
+    void UpdateStopwatch()
+    {
+        stoptwatchTime += Time.deltaTime;
+        UpdateStopwatchDisplay();
+        
+        if(stoptwatchTime >= timelimit)
+        {
+            GameOver();            // You can add additional logic here if needed when the time limit is reached
+        }
+    }
+
+    void UpdateStopwatchDisplay()
+    {
+        int minutes = Mathf.FloorToInt(stoptwatchTime / 60f);
+        int seconds = Mathf.FloorToInt(stoptwatchTime % 60f);
+        stopwatchDisplay.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    public void StartLevelUP()
+    {
+        ChangeState(GameState.LevelUp);
+        playerObject.SendMessage("RemoveAndApplyUpgradeOptions");
+    }
+
+    public void EndLevelUP()
+    {
+        choosingUpgrade = false;
+        levelUpScreen.SetActive(false);
+        Time.timeScale = 1f; // Resume the game
+        ChangeState(GameState.Gameplay);
     }
 }
