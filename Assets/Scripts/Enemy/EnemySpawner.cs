@@ -32,6 +32,7 @@ public class EnemySpawner : MonoBehaviour
     public int maxEnemiesAllowed; // The maximum number of enemies allowed to be alive at once
     public bool maxEnemiesReached = false; // Flag to indicate if the max enemies limit has been reached
     public float waveInterval;
+    bool isWaveActive = false;
 
     [Header("Spawn Positions")]
     public List<Transform> relativeSpawnPoints;
@@ -47,7 +48,7 @@ public class EnemySpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0)
+        if(currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0 && !isWaveActive)
         {
             StartCoroutine(BeginNextWave());// Check if the wave has ended and the next wave should begin
         }
