@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 public class Pickup : MonoBehaviour, ICollectible
 {
-    protected bool hasBeenCollected = false;
+    public bool hasBeenCollected = false;
 
     public virtual void Collect()
     {

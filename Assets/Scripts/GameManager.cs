@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-using System.Reflection;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +19,12 @@ public class GameManager : MonoBehaviour
     public GameState currentState;
 
     public GameState previousState;
+
+    [Header("Damage Text Settings")]
+    public Canvas damageTextCanvas;
+    public float textFontSize = 20;
+    public TMP_FontAsset textFont;
+    public Camera referenceCamera;
 
     [Header("Screens")]
     public GameObject pauseScreen;
@@ -102,6 +108,51 @@ public class GameManager : MonoBehaviour
                 }                
                 break;
         }
+    }
+
+    public static void GenerateFloatingText(string text, Transform target, float duration =1f, float speed =1f)
+    {
+        // If the canvas is not set, end the function so we don't
+        // generate any floating text;
+        if(!instance.damageTextCanvas)
+            return;
+        
+        // Find a relevant camera that we can use to convert the world
+        // position to a screen position
+        if(!instance.referenceCamera)
+            instance.referenceCamera = Camera.main;
+
+        instance.StartCoroutine(instance.GenerateFloatingTextCoroutine(text, target, duration, speed));
+    }
+
+    IEnumerator GenerateFloatingTextCoroutine(string text, Transform target, float duration, float speed)
+    {
+        // Create a new TextMeshProUGUI object
+        GameObject textObj = new GameObject("Damage Floating Text");
+        textObj.transform.SetParent(instance.damageTextCanvas.transform);
+
+        TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
+        tmp.text = text;
+        tmp.fontSize = instance.textFontSize;
+        if(instance.textFont)
+            tmp.font = instance.textFont;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.enableWordWrapping = false;
+        tmp.raycastTarget = false;
+
+        float elapsedTime = 0f;
+        Vector3 startPosition = instance.referenceCamera.WorldToScreenPoint(target.position);
+        Vector3 endPosition = startPosition + new Vector3(0, 100, 0); // Move up by 100 units
+
+        while(elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+            tmp.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            yield return null;
+        }
+
+        Destroy(textObj);
     }
 
     public void ChangeState(GameState newState)

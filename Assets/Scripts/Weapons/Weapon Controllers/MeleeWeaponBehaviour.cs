@@ -35,7 +35,7 @@ public class MeleeWeaponBehaviour : MonoBehaviour
     {
         if(collision.CompareTag("Enemy"))
         {
-            collision.GetComponent<EnemyStats>().TakeDamage(GetCurrentDamage());
+            collision.GetComponent<EnemyStats>().TakeDamage(GetCurrentDamage(), transform.position);
             //추가 효과들 여기에
         }
         else if(collision.CompareTag("Prop"))
