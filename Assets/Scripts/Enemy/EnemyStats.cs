@@ -53,6 +53,11 @@ public class EnemyStats : MonoBehaviour
     {
         currentHealth -= damage;
         StartCoroutine(DamageFlash());
+        // Create the text popup when enemy takes damage
+        if(damage > 0)
+        {
+            GameManager.GenerateFloatingText(Mathf.FloorToInt(damage).ToString(), transform);
+        }
         //Apply knockback
         if(knockbackForce > 0)
         {

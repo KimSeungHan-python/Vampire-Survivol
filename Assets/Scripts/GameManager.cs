@@ -125,34 +125,38 @@ public class GameManager : MonoBehaviour
         instance.StartCoroutine(instance.GenerateFloatingTextCoroutine(text, target, duration, speed));
     }
 
-    IEnumerator GenerateFloatingTextCoroutine(string text, Transform target, float duration, float speed)
+    IEnumerator GenerateFloatingTextCoroutine(string text, Transform target, float duration = 1f, float speed = 50f)
     {
         // Create a new TextMeshProUGUI object
         GameObject textObj = new GameObject("Damage Floating Text");
+        RectTransform rect = textObj.AddComponent<RectTransform>();
+        TextMeshProUGUI tmPro = textObj.AddComponent<TextMeshProUGUI>();
+        tmPro.text = text;
+        tmPro.horizontalAlignment = HorizontalAlignmentOptions.Center;
+        tmPro.verticalAlignment = VerticalAlignmentOptions.Middle;
+        tmPro.fontSize = textFontSize;
+        if(textFont)
+            tmPro.font = textFont;
+        rect.position = instance.referenceCamera.WorldToScreenPoint(target.position);
+
+        Destroy(textObj, duration);
+
         textObj.transform.SetParent(instance.damageTextCanvas.transform);
 
-        TextMeshProUGUI tmp = textObj.AddComponent<TextMeshProUGUI>();
-        tmp.text = text;
-        tmp.fontSize = instance.textFontSize;
-        if(instance.textFont)
-            tmp.font = instance.textFont;
-        tmp.alignment = TextAlignmentOptions.Center;
-        tmp.enableWordWrapping = false;
-        tmp.raycastTarget = false;
-
-        float elapsedTime = 0f;
-        Vector3 startPosition = instance.referenceCamera.WorldToScreenPoint(target.position);
-        Vector3 endPosition = startPosition + new Vector3(0, 100, 0); // Move up by 100 units
-
-        while(elapsedTime < duration)
+        // Pan the text upwards and fade it away over time
+        WaitForEndOfFrame wait = new WaitForEndOfFrame();
+        float t =0;
+        float yoffset =0;
+        while(t < duration)
         {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / duration;
-            tmp.transform.position = Vector3.Lerp(startPosition, endPosition, t);
-            yield return null;
+            yield return wait;
+            t += Time.deltaTime;
+            tmPro.color = new Color(tmPro.color.r, tmPro.color.g, tmPro.color.b, 1 - (t / duration));
+            yoffset += speed * Time.deltaTime;
+            rect.position = referenceCamera.WorldToScreenPoint(target.position) + new Vector3(0, yoffset);
         }
 
-        Destroy(textObj);
+
     }
 
     public void ChangeState(GameState newState)
