@@ -1,6 +1,4 @@
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks.Dataflow;
+
 using UnityEngine;
 
 
@@ -8,10 +6,11 @@ using UnityEngine;
 // // Component that you attach to all projectile perfabs. Al spawned projectiles will fly in the direction
 // // they are facing and deal damage when they hit an object.
 // // </summary>
+[RequireComponent(typeof(Rigidbody2D))]
 public class Projectile : WeaponEffect
 {
-    public enum DamageSource { Projectile, owner };
-    public DamageSource damageSource = DamageSource.Projectile;
+    public enum DamageSource { projectile, owner };
+    public DamageSource damageSource = DamageSource.projectile;
     public bool hasAutoAim = false;
     public Vector3 rotationSpeed =  new Vector3(0,0,0);
 
@@ -26,7 +25,7 @@ public class Projectile : WeaponEffect
         if(rb.bodyType == RigidbodyType2D.Dynamic)
         {
             rb.angularVelocity = rotationSpeed.z;
-            rb.velocity = transform.up * stats.speed;
+            rb.linearVelocity = transform.up * stats.speed;
         }
 
         // Prevent the area from being 0, as it hides the projectile
@@ -50,7 +49,7 @@ public class Projectile : WeaponEffect
         float aimAngle; // We need to determine where to aim.
 
         //Find all enemies on the screen.
-        EnemyStats[] targets = FindObjectOfType<EnemyStats>();
+        EnemyStats[] targets = FindObjectsOfType<EnemyStats>();
 
         // Select a random enemy (if there is at least 1)
         // Otherwise, pick a random angle
@@ -89,5 +88,37 @@ public class Projectile : WeaponEffect
 
         // Only collide with enemies or breakable stuffs
         if(es)
+        {
+            // If there is an owner, and the damage soruce is set to owner,
+            // we will calculate knockback using the owener instead of the projectile.
+            Vector3 source = damageSource == DamageSource.owner && owner ? owner.transform.position : transform.position;
+
+            // Deals damage and destroys the projectile.
+            es.TakeDamage(GetDamage(), source);
+
+            Weapon.Stats stats = weapon.GetStats();
+            piercing--;
+            if(stats.hitEffect)
+            {
+                Destroy(Instantiate(stats.hitEffect, transform.position, Quaternion.identity), 5f);
+            }
+        }
+        else if(p)
+        {
+            // Deals damage and destroys the projectile.
+            p.TakeDamage(GetDamage());
+
+            Weapon.Stats stats = weapon.GetStats();
+            if(stats.hitEffect)
+            {
+                Destroy(Instantiate(stats.hitEffect, transform.position, Quaternion.identity), 5f);
+            }
+        }
+
+        // Destroy this obejct if it has run out of health from hitting other stuff.
+        if(piercing <=0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
