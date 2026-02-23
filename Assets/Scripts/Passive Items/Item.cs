@@ -11,7 +11,7 @@ public abstract class Item : MonoBehaviour
 
     protected PlayerStats owner;
 
-    public virtual void Initialize(ItemData data)
+    public virtual void Initialise(ItemData data)
     {
         maxLevel = data.maxLevel;
         owner = FindObjectOfType<PlayerStats>();

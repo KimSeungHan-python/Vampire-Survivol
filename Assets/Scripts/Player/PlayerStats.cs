@@ -1,13 +1,19 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using System.Xml;
 
 
 public class PlayerStats : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    CharacterData characterData;
+    public CharacterData.Stats baseStats;
+    [SerializeField] XmlCharacterData.Stats actualStats;
+
+    float health;
     CharacterScriptableObject characterData;
     float currentHealth;
     float currentMight;
@@ -22,53 +28,93 @@ public class PlayerStats : MonoBehaviour
     public float CurrentHealth
     {
         //Check if the value has changed
-        get { return currentHealth; }
+        get { return health; }
         set 
         { 
-            if(currentHealth != value)
+            if(health != value)
             {
-                currentHealth = value; 
+                health = value; 
                 if(GameManager.instance != null)
                 {
-                    GameManager.instance.currentHealthDisplay.text = "Health: " + currentHealth;
+                    GameManager.instance.currentHealthDisplay.text = string.Format(
+                        "Health: {0} / {1}",
+                        health, actualStats.maxHealth
+                    );
                 }
                 //Update the real time value of the stat
                 //Add any additional logic here that needs to be executed when value changes
             }       
+        }
+    }
+
+    public float MaxHealth
+    {
+        get {return actualStats.maxHealth;}
+
+        //If we try and set the max health, the UI interface
+        // on the pause screen will also be updated.
+        set
+        {
+            // Check if the value has changed
+            if(actualStats.maxHealth != value)
+            {
+                actualStats.maxHealth = value;
+                if (GameManager.instance != null)
+                {
+                    GameManager.instance.currentHealthDisplay.text = string.Format(
+                        "Health: {0} / {1}",
+                        health, actualStats.maxHealth
+                    );
+                }
+                //Update the real time value of the stat
+                //Add any additional logic here that needs to be executed when the value changes
+            }
         }
     }
 
     public float CurrentRecovery
     {
         //Check if the value has changed
-        get { return currentRecovery; }
-        set 
-        { 
-            if(currentRecovery != value)
+        get { return Recovery; }
+        set { Recovery= value;}
+    }
+    public float Recovery
+    {
+        get {return actualStats.recovery;}
+        set
+        {
+            //Check if the value has changed
+            if(actualStats.recovery != value)
             {
-                currentRecovery = value; 
+                actualStats.recovery = value;
                 if(GameManager.instance != null)
                 {
-                    GameManager.instance.currentRecoveryDisplay.text = "Recovery: " + currentRecovery;
+                    GameManager.instance.currentRecoveryDisplay.text = "Recovery" + actualStats.recovery;
                 }
-                //Update the real time value of the stat
-                //Add any additional logic here that needs to be executed when value changes
-            }       
+            }
         }
     }
 
-    public float CurrentMoveSpeed   
+    public float CurrentMoveSpeed
+    {
+        get { return MoveSpeed;}
+        set { MoveSpeed = value;}
+    }
+        
+    
+
+    public float MoveSpeed   
     {
         //Check if the value has changed
-        get { return currentMoveSpeed; }
+        get { return actualStats.moveSpeed; }
         set 
         { 
-            if(currentMoveSpeed != value)
+            if(actualStats.moveSpeed != value)
             {
-                currentMoveSpeed = value; 
+                actualStats.moveSpeed = value; 
                 if(GameManager.instance != null)
                 {
-                    GameManager.instance.currentMoveSpeedDisplay.text = "Move Speed: " + currentMoveSpeed;
+                    GameManager.instance.currentMoveSpeedDisplay.text = "Move Speed: " + actualStats.moveSpeed;
                 }
                 //Update the real time value of the stat
                 //Add any additional logic here that needs to be executed when value changes
@@ -78,16 +124,22 @@ public class PlayerStats : MonoBehaviour
 
     public float CurrentMight
     {
+        get {return Might;}
+        set {Might = value;}
+    }
+
+    public float Might
+    {
         //Check if the value has changed
-        get { return currentMight; }
+        get { return actualStats.might; }
         set 
         { 
-            if(currentMight != value)
+            if(actualStats.might != value)
             {
-                currentMight = value; 
+                actualStats.might = value; 
                 if(GameManager.instance != null)
                 {
-                    GameManager.instance.currentMightDisplay.text = "Might: " + currentMight;
+                    GameManager.instance.currentMightDisplay.text = "Might: " + actualStats.might;
                 }
                 //Update the real time value of the stat
                 //Add any additional logic here that needs to be executed when value changes
@@ -95,18 +147,24 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public float CurrentProjectileSpeed
+    public float CurrnetProjectileSpeed
+    {
+        get {return Speed;}
+        set { Speed = value;}
+    }
+
+    public float Speed
     {
         //Check if the value has changed
-        get { return currentProjectileSpeed; }
+        get { return actualStats.speed; }
         set 
         { 
-            if(currentProjectileSpeed != value)
+            if(actualStats.speed != value)
             {
-                currentProjectileSpeed = value; 
+                actualStats.speed = value; 
                 if(GameManager.instance != null)
                 {
-                    GameManager.instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + currentProjectileSpeed;
+                    GameManager.instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + actualStats.speed;
                 }
                 //Update the real time value of the stat
                 //Add any additional logic here that needs to be executed when value changes
@@ -116,16 +174,21 @@ public class PlayerStats : MonoBehaviour
 
     public float CurrentMagnet
     {
+        get { return Magnet;}
+        set { Magnet = value;}
+    }
+    public float Magnet
+    {
         //Check if the value has changed
-        get { return currentMagnet; }
+        get { return actualStats.magnet; }
         set 
         { 
-            if(currentMagnet != value)
+            if(actualStats.magnet != value)
             {
-                currentMagnet = value; 
+                actualStats.magnet = value; 
                 if(GameManager.instance != null)
                 {
-                    GameManager.instance.currentMagnetDisplay.text = "Magnet: " + currentMagnet;
+                    GameManager.instance.currentMagnetDisplay.text = "Magnet: " + actualStats.magnet;
                 }
                 //Update the real time value of the stat
                 //Add any additional logic here that needs to be executed when value changes
@@ -157,9 +220,8 @@ public class PlayerStats : MonoBehaviour
 
     public List<LevelRange> levelRanges;
 
-    InventoryManager inventory;
+    PlayerInventory inventory;
     public int passiveItemIndex;
-
     public int weaponIndex;
 
     [Header("UI")]
@@ -187,21 +249,29 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
-        inventory = GetComponent<InventoryManager>();
+        inventory = GetComponent<PlayerInventory>();
 
-        CurrentHealth = characterData.MaxHealth;
-        CurrentMight = characterData.Might;
-        CurrentProjectileSpeed = characterData.ProjectileSpeed;
-        CurrentMoveSpeed = characterData.MoveSpeed;
-        CurrentRecovery = characterData.Recovery;
-        CurrentMagnet = characterData.Magnet;
+        //Assign the variables
 
-        //Start the starting weapons
-        SpawnWeapon(characterData.StartingWeapon);
+        baseStats = actualStats = characterData.stats;
+        health = actualStatsStats.maxHealth;
+
+        // CurrentHealth = characterData.MaxHealth;
+        // CurrentMight = characterData.Might;
+        // CurrentProjectileSpeed = characterData.ProjectileSpeed;
+        // CurrentMoveSpeed = characterData.MoveSpeed;
+        // CurrentRecovery = characterData.Recovery;
+        // CurrentMagnet = characterData.Magnet;
+
+        // //Start the starting weapons
+        // SpawnWeapon(characterData.StartingWeapon);
     }
 
     void Start()
     {
+        //Spawn the starting weapon
+        inventory.Add(characterData.StartingWeapon);
+
         if (levelRanges != null && levelRanges.Count > 0)
         {
             experienceCap = levelRanges[0].experienceCapIncrease;
@@ -238,6 +308,19 @@ public class PlayerStats : MonoBehaviour
         }
 
         Recover();
+    }
+
+    public void RecalculateStats()
+    {
+        actualStats = baseStats;
+        foreach (PlayerInventory.Slot s in inventory.passiveSlots)
+        {
+            Passive p = s.item as Passive;
+            if(p)
+            {
+                actualStats += p.GetBoosts();
+            }
+        }
     }
 
     public void IncreaseExperience(int amount)

@@ -206,7 +206,7 @@ public class GameManager : MonoBehaviour
         // Populate results screen with relevant data (e.g., score, stats, etc.)
     }
 
-    public void AssignChosenCharacterUI(CharacterScriptableObject characterData)
+    public void AssignChosenCharacterUI(CharacterData characterData)
     {
         chosenCharacterImage.sprite = characterData.Icon;
         chosenCharacterName.text = characterData.Name;
