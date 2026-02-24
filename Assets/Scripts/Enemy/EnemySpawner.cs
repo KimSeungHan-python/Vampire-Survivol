@@ -62,12 +62,14 @@ public class EnemySpawner : MonoBehaviour
 
     IEnumerator BeginNextWave()
     {
+        isWaveActive = true;
         //Wave for 'waveInterval' seconds before starting the next wave
         yield return new WaitForSeconds(waveInterval);
 
         //if there are more waves to start after the current wave, move on to the next wave
         if(currentWaveCount < waves.Count - 1)
         {
+            isWaveActive = false;
             currentWaveCount++;
             CalculateWaveQuota();
         }
@@ -101,11 +103,7 @@ public class EnemySpawner : MonoBehaviour
                 //check if the minimum number of this type have been spawned
                 if(enemyGroup.spawnCount < enemyGroup.enemyCount)
                 {
-                    if(enemiesAlive >= maxEnemiesAllowed)
-                    {
-                        maxEnemiesReached = true;
-                        return; // Exit the method if the max enemies limit has been reached
-                    }
+
 
                     Instantiate(enemyGroup.enemyPrefab, player.position + (Vector3)relativeSpawnPoints[Random.Range(0, relativeSpawnPoints.Count)].position, Quaternion.identity);
 
@@ -113,17 +111,25 @@ public class EnemySpawner : MonoBehaviour
                     enemyGroup.spawnCount++;
                     waves[currentWaveCount].spawnCount++;
                     enemiesAlive++;
+
+                    if(enemiesAlive >= maxEnemiesAllowed)
+                    {
+                        maxEnemiesReached = true;
+                        return; // Exit the method if the max enemies limit has been reached
+                    }
                 }
             }
         }
-        if(enemiesAlive < maxEnemiesAllowed)
-        {
-            maxEnemiesReached = false;
-        }
+
     }
 
     public void OnEnemyKilled()
     {
         enemiesAlive--;
+
+        if(enemiesAlive < maxEnemiesAllowed)
+        {
+            maxEnemiesReached = false;
+        }
     }
 }

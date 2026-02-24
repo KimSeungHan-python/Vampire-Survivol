@@ -1,10 +1,11 @@
-
 using UnityEngine;
 
 public class ProjectileWeapon : Weapon
 {
+    public Weapon weapon; // Added a public field to store the associated weapon
+
     protected float currentAttackInterval;
-    protected int currentAttackCount; // Number of tiems this attack will haapen
+    protected int currentAttackCount; // Number of times this attack will happen
 
     protected override void Update()
     {

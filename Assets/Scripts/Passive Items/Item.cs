@@ -17,9 +17,9 @@ public abstract class Item : MonoBehaviour
         owner = FindObjectOfType<PlayerStats>();
     }
     
-    public virtual bool CanEvolve()
+    public virtual bool CanLevelUp()
     {
-        return currentLevel <= maxLevel;
+        return currentLevel < maxLevel;
     }
 
     // Whenever an item levels up, attempt to make it evolve.

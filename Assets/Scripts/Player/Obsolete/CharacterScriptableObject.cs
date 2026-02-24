@@ -40,4 +40,12 @@ public class CharacterScriptableObject : ScriptableObject
     [SerializeField]
     float magnet;
     public float Magnet { get => magnet; private set => magnet = value; }
+
+    [SerializeField]
+    CharacterData characterData; // Added reference to CharacterData
+
+    public CharacterData ToCharacterData()
+    {
+        return characterData; // Returns the associated CharacterData
+    }
 }

@@ -5,8 +5,6 @@ using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 
-
-
 public class PlayerStats : MonoBehaviour
 {
     CharacterData characterData;
@@ -14,7 +12,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] CharacterData.Stats actualStats;
 
     float health;
-    CharacterScriptableObject characterData;
+    //CharacterScriptableObject characterData;
     float currentHealth;
     float currentMight;
     float currentProjectileSpeed;
@@ -147,28 +145,27 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public float CurrnetProjectileSpeed
+    public float CurrentProjectileSpeed
     {
-        get {return Speed;}
-        set { Speed = value;}
+        get { return Speed; }
+        set { Speed = value; }
     }
-
     public float Speed
     {
         //Check if the value has changed
-        get { return actualStats.speed; }
-        set 
-        { 
-            if(actualStats.speed != value)
+        get { return actualStats.projectileSpeed; }
+        set
+        {
+            if (actualStats.projectileSpeed != value)
             {
-                actualStats.speed = value; 
-                if(GameManager.instance != null)
+                actualStats.projectileSpeed = value;
+                if (GameManager.instance != null)
                 {
-                    GameManager.instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + actualStats.speed;
+                    GameManager.instance.currentProjectileSpeedDisplay.text = "Projectile Speed: " + actualStats.projectileSpeed;
                 }
                 //Update the real time value of the stat
                 //Add any additional logic here that needs to be executed when value changes
-            }       
+            }
         }
     }
 
@@ -240,7 +237,7 @@ public class PlayerStats : MonoBehaviour
         else
         {
             Debug.LogWarning("CharacterSelector not found. Using default character data from this object.");
-            characterData = GetComponent<CharacterScriptableObject>();
+            characterData = GetComponent<CharacterData>();
             if (characterData == null)
             {
                 // 기본값으로 테스트용 데이터 설정이 필요할 수 있음
@@ -254,7 +251,7 @@ public class PlayerStats : MonoBehaviour
         //Assign the variables
 
         baseStats = actualStats = characterData.stats;
-        health = actualStatsStats.maxHealth;
+        health = actualStats.maxHealth;
 
         // CurrentHealth = characterData.MaxHealth;
         // CurrentMight = characterData.Might;
@@ -310,7 +307,7 @@ public class PlayerStats : MonoBehaviour
         Recover();
     }
 
-    public void RecalculateStats()
+    public void ReCalculateStats()
     {
         actualStats = baseStats;
         foreach (PlayerInventory.Slot s in inventory.passiveSlots)
@@ -368,7 +365,7 @@ public class PlayerStats : MonoBehaviour
         if(!isInvincible)
         {
             CurrentHealth -= damage;
-            if(damageEffect) Destroy(Instantiate(damageEffect, transform.position, Quaternion.identity),5f);
+            if(damageEffect) Destroy(Instantiate(damageEffect, transform.position, Quaternion.identity), 5f);
 
             isInvincible = true;
             invincibilityTimer = invincibilityDuration;
@@ -427,7 +424,7 @@ public class PlayerStats : MonoBehaviour
     public void SpawnWeapon(GameObject weapon)
     {
         //Checking if the slots are full, and returning if it is
-        if(weaponIndex >= inventory.weaponSlots.Count -1 ) // Must be -1 because a list starts from 0
+        if(weaponIndex >= inventory.weaponSlots.Count - 1) // Corrected '-1' logic
         {
             Debug.Log("Inventory Slots Full");
             return;
@@ -435,7 +432,7 @@ public class PlayerStats : MonoBehaviour
 
         GameObject spawnedWeapon = Instantiate(weapon, transform.position, Quaternion.identity);
         spawnedWeapon.transform.SetParent(transform); // Set the weapon as a child of the player
-        inventory.AddWeapon(weaponIndex, spawnedWeapon.GetComponent<WeaponController>());//Add the weapon th it's inventory slot
+        //inventory.Add(spawnedWeapon.GetComponent<WeaponController>().weaponData); // Use Add function
         weaponIndex++;
 
     }
@@ -443,7 +440,7 @@ public class PlayerStats : MonoBehaviour
         public void SpawnPassiveItem(GameObject passiveItem)
     {
         //Checking if the slots are full, and returning if it is
-        if(passiveItemIndex >= inventory.passiveSlots.Count -1 ) // Must be -1 because a list starts from 0
+        if(passiveItemIndex >= inventory.passiveSlots.Count - 1) // Corrected '-1' logic
         {
             Debug.Log("Inventory Slots Full");
             return;
@@ -451,8 +448,7 @@ public class PlayerStats : MonoBehaviour
 
         GameObject spawnedPassiveItem = Instantiate(passiveItem, transform.position, Quaternion.identity);
         spawnedPassiveItem.transform.SetParent(transform); // Set the weapon as a child of the player
-        inventory.AddPassiveItem(passiveItemIndex, spawnedPassiveItem.GetComponent<PassiveItem>());//Add the weapon th it's inventory slot
+        //inventory.Add(spawnedPassiveItem.GetComponent<PassiveItem>().passiveItemData); // Use Add function
         passiveItemIndex++;
-
     }
 }

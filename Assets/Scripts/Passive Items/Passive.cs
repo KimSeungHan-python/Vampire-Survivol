@@ -32,7 +32,7 @@ public class Passive : Item
     }
 
     // Levels up the weapon by 1, and calculates the corresponding stats.
-    public override bool DoLevelUo()
+    public override bool DoLevelUp()
     {
         base.DoLevelUp();
 

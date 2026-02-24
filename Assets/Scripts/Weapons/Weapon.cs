@@ -12,7 +12,7 @@ public abstract class Weapon : Item
         public string name, description;
 
         [Header("Visuals")]
-        //public Projectile projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down
+        public ProjectileWeapon projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down
         //public Aura auraPrefab; // if attached, an aura will be created around the player when the weapon is equipped
         public ParticleSystem hitEffect;
         public Rect spawnVariance;
@@ -29,8 +29,8 @@ public abstract class Weapon : Item
             Stats result = new Stats();
             result.name = s2.name ?? s1.name;
             result.description = s2.description ?? s1.description;
-            //result.projectilePrefab = s2.projectilePrefab ?? s1.projectilePrefab;
-            //result.auraPrefab = s2.auraPrefab ?? s1.auraPrefab;
+            result.projectilePrefab = s2.projectilePrefab ?? s1.projectilePrefab;
+            //result.auraPrefab = s2.auraPrefab == null ? s1.auraPrefab : s2.auraPrefab;
             result.hitEffect = s2.hitEffect == null ? s1.hitEffect : s2.hitEffect;
             result.spawnVariance = s2.spawnVariance;
             result.lifespan = s1.lifespan + s2.lifespan;
