@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-using System.Xml;
+
 
 
 public class PlayerStats : MonoBehaviour
 {
     CharacterData characterData;
     public CharacterData.Stats baseStats;
-    [SerializeField] XmlCharacterData.Stats actualStats;
+    [SerializeField] CharacterData.Stats actualStats;
 
     float health;
     CharacterScriptableObject characterData;
@@ -368,7 +368,7 @@ public class PlayerStats : MonoBehaviour
         if(!isInvincible)
         {
             CurrentHealth -= damage;
-            if(damageEffect) Instantiate(damageEffect, transform.position, Quaternion.identity);
+            if(damageEffect) Destroy(Instantiate(damageEffect, transform.position, Quaternion.identity),5f);
 
             isInvincible = true;
             invincibilityTimer = invincibilityDuration;
@@ -386,7 +386,7 @@ public class PlayerStats : MonoBehaviour
     {
         if(HealthBar != null)
         {
-            HealthBar.fillAmount = CurrentHealth / characterData.MaxHealth;
+            HealthBar.fillAmount = CurrentHealth / actualStats.maxHealth;
         }
     }
     public void Kill()
@@ -394,7 +394,7 @@ public class PlayerStats : MonoBehaviour
         if(!GameManager.instance.isGameOver)
         {
             GameManager.instance.AssignLevelReachedUI(level);
-            GameManager.instance.AssignChosenWeaponAndPassiveItemUI(inventory.weaponSlotsUI, inventory.passiveItemSlotsUI);
+            //GameManager.instance.AssignChosenWeaponAndPassiveItemUI(inventory.weaponSlotsUI, inventory.passiveItemSlotsUI);
             GameManager.instance.GameOver();
         }
 
@@ -402,28 +402,28 @@ public class PlayerStats : MonoBehaviour
 
     public void RestoreHealth(float amount)
     {
-        if(CurrentHealth < characterData.MaxHealth)
+        if(CurrentHealth < actualStats.maxHealth)
         {
             CurrentHealth += amount;
-            if(CurrentHealth > characterData.MaxHealth)
+            if(CurrentHealth > actualStats.maxHealth)
             {
-                CurrentHealth = characterData.MaxHealth;
+                CurrentHealth = actualStats.maxHealth;
             }
         }
     }
 
     void Recover()
     {
-        if(CurrentHealth < characterData.MaxHealth)
+        if(CurrentHealth < actualStats.maxHealth)
         {
             CurrentHealth += CurrentRecovery * Time.deltaTime;
-            if(CurrentHealth > characterData.MaxHealth)
+            if(CurrentHealth > actualStats.maxHealth)
             {
-                CurrentHealth = characterData.MaxHealth;
+                CurrentHealth = actualStats.maxHealth;
             }
         }
     }
-
+    [System.Obsolete("Old function that is kept to maintain compativibility with the InventoryManager. Will be removed soon.")]
     public void SpawnWeapon(GameObject weapon)
     {
         //Checking if the slots are full, and returning if it is
@@ -439,11 +439,11 @@ public class PlayerStats : MonoBehaviour
         weaponIndex++;
 
     }
-
+    [System.Obsolete("No need to spawn passive items directly now.")]
         public void SpawnPassiveItem(GameObject passiveItem)
     {
         //Checking if the slots are full, and returning if it is
-        if(passiveItemIndex >= inventory.passiveItemSlots.Count -1 ) // Must be -1 because a list starts from 0
+        if(passiveItemIndex >= inventory.passiveSlots.Count -1 ) // Must be -1 because a list starts from 0
         {
             Debug.Log("Inventory Slots Full");
             return;
