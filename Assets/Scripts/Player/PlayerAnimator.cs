@@ -40,4 +40,12 @@ public class PlayerAnimator : MonoBehaviour
             sr.flipX = true;
         }
     }
+
+    public void SetAnimatorController(RuntimeAnimatorController controller)
+    {
+        if (!am) am = GetComponent<Animator>();
+        am.runtimeAnimatorController = controller;
+
+    }
 }
+

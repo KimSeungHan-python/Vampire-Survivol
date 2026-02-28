@@ -226,6 +226,8 @@ public class PlayerStats : MonoBehaviour
     public Image expBar;
     public TextMeshProUGUI levelText;
 
+    PlayerAnimator playerAnimator;
+
 
     void Awake()
     {
@@ -247,11 +249,14 @@ public class PlayerStats : MonoBehaviour
         }
 
         inventory = GetComponent<PlayerInventory>();
-
+        collector = GetComponentInChildren<PlayerCollector>();
         //Assign the variables
-
         baseStats = actualStats = characterData.stats;
         health = actualStats.maxHealth;
+
+        playerAnimator = GetComponent<PlayerAnimator>();
+        if(characterData.animatorController)
+            playerAnimator.SetAnimatorController(characterData.animatorController);
 
         // CurrentHealth = characterData.MaxHealth;
         // CurrentMight = characterData.Might;

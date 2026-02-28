@@ -260,7 +260,7 @@ public class PlayerInventory : MonoBehaviour
     {
         if(weaponSlots.Count > slotIndex)
         {
-            weaponSlots weapon = weaponSlots[slotIndex].item as weapon;
+            Weapon weapon = weaponSlots[slotIndex].item as Weapon;
 
             //Don't level up the weapon if it is already at max level.
             if(!weapon.DoLevelUp())
@@ -350,7 +350,7 @@ public class PlayerInventory : MonoBehaviour
                             isLevelUp = false;
                             break;
                         }
-                        weaponSlots w = weaponSlots[i].item as Weapon;
+                        Weapon w = weaponSlots[i].item as Weapon;
                         if(w !=null && w.data == chosenWeaponUpgrade)
                         {
                             // If the weapon is already at the max level. do not allow upgrade.
@@ -389,7 +389,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 // NOTE: We have to recode this system, as right now it disables an upgrade slot if
                 // we hit a weapon that has already reached max level.
-                PassvieData chosenPassiveUpgrade = availablePassiveItemUpgrades[UnityEngine.Random.Range(0, availablePassiveItemUpgrades.Count)];
+                PassiveData chosenPassiveUpgrade = availablePassiveItemUpgrades[UnityEngine.Random.Range(0, availablePassiveItemUpgrades.Count)];
                 availablePassiveItemUpgrades.Remove(chosenPassiveUpgrade);
 
                 if(chosenPassiveUpgrade != null)
