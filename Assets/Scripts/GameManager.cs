@@ -142,18 +142,31 @@ public class GameManager : MonoBehaviour
         Destroy(textObj, duration);
 
         textObj.transform.SetParent(instance.damageTextCanvas.transform);
+        textObj.transform.SetSiblingIndex(0);
 
         // Pan the text upwards and fade it away over time
         WaitForEndOfFrame wait = new WaitForEndOfFrame();
         float t =0;
-        float yoffset =0;
+        float yOffset =0;
+        Vector3 lastKnownPosition = target.position;
         while(t < duration)
         {
+            // If the rect object is missing for whatever reason, terminate this loop.
+            if (!rect) break;
+            // Fade the text to the right alpha value.
+            tmPro.color = new Color(tmPro.color.r, tmPro.color.g, tmPro.color.b, 1 - (t / duration));
+
+            // It target exists, then save its position.
+            if(target)
+            {
+                lastKnownPosition = target.position;
+            }
+            yOffset += speed * Time.deltaTime;
+            rect.position = referenceCamera.WorldToScreenPoint(lastKnownPosition) + new Vector3(0, yOffset);
+        
             yield return wait;
             t += Time.deltaTime;
-            tmPro.color = new Color(tmPro.color.r, tmPro.color.g, tmPro.color.b, 1 - (t / duration));
-            yoffset += speed * Time.deltaTime;
-            rect.position = referenceCamera.WorldToScreenPoint(target.position) + new Vector3(0, yoffset);
+
         }
 
 
@@ -217,7 +230,7 @@ public class GameManager : MonoBehaviour
         levelReachedDisplay.text = levelReachedData.ToString();
     }
 
-    public void AssignChosenWeaponAndPassiveItemUI(List<Image> chosenWeaponUIData, List<Image> chosenPassiveItemUIData)
+    public void AssignChosenWeaponAndPassiveItemUI(List<PlayerInventory.Slot> chosenWeaponUIData, List<PlayerInventory.Slot> chosenPassiveItemUIData)
     {
         if(chosenWeaponUIData.Count != chosenWeaponUI.Count || chosenPassiveItemUIData.Count != chosenPassiveItemUI.Count)
         {
@@ -226,28 +239,28 @@ public class GameManager : MonoBehaviour
         }
         for(int i = 0; i < chosenWeaponUIData.Count; i++)
         {
-            if(chosenWeaponUI[i].sprite)
+            if(chosenWeaponUIData[i].image.sprite)
             {
-                chosenWeaponUIData[i].enabled = true;
-                chosenWeaponUIData[i].sprite = chosenWeaponUI[i].sprite;
+                chosenWeaponUI[i].enabled = true;
+                chosenWeaponUI[i].sprite = chosenWeaponUIData[i].image.sprite;
                 
             }
             else
             {
-                chosenWeaponUIData[i].enabled = false;
+                chosenWeaponUI[i].enabled = false;
             }
         }
         for(int i = 0; i < chosenPassiveItemUIData.Count; i++)
         {
-            if(chosenPassiveItemUI[i].sprite)
+            if(chosenPassiveItemUIData[i].image.sprite)
             {
-                chosenPassiveItemUIData[i].enabled = true;
-                chosenPassiveItemUIData[i].sprite = chosenPassiveItemUI[i].sprite;
+                chosenPassiveItemUI[i].enabled = true;
+                chosenPassiveItemUI[i].sprite = chosenPassiveItemUIData[i].image.sprite;
                 
             }
             else
             {
-                chosenPassiveItemUIData[i].enabled = false;
+                chosenPassiveItemUI[i].enabled = false;
             }
         }
 

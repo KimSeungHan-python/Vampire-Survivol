@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System.Xml;
-using System.Runtime.Versioning;
+using UnityEditor;
 
 public class CharacterSelector : MonoBehaviour
 {
@@ -29,13 +28,35 @@ public class CharacterSelector : MonoBehaviour
             return instance.characterData;
         else
         {
-            // If no character data is assigned, we randomly pick one.
-            CharacterData[] characters = Resources.FindObjectsOfTypeAll<CharacterData>();
-            if(characters.Length > 0)
+            // Randomly pick a character if we are playing from the Eidtor.
+            #if UNITY_EDITOR
+            string[] allAssetPaths = AssetDatabase.GetAllAssetPaths();
+            List<CharacterData> characters = new List<CharacterData>();
+            foreach (string assetPath in allAssetPaths)
             {
-                return characters[Random.Range(0, characters.Length)];
+                if (assetPath.EndsWith(".asset"))
+                {
+                    CharacterData characterData = AssetDatabase.LoadAssetAtPath<CharacterData>(assetPath);
+                    if (characterData != null)
+                    {
+                        characters.Add(characterData);
+                    }
+                }
             }
+            // Pick a random character if we have found any characters.
+            if(characters.Count > 0)
+            {
+            return characters[Random.Range(0, characters.Count)];
+            }
+            #endif
+            // 기존
+            // CharacterData[] characters = Resources.FindObjectsOfTypeAll<CharacterData>();
+            // if(characters.Length > 0)
+            // {
+            //     return characters[Random.Range(0, characters.Length)];
+            // }
         }
+        
         return null;
     }
 

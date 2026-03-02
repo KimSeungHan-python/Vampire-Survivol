@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using System.Collections;
+using System.Collections.Generic;
 public class ProjectileWeapon : Weapon
 {
     public Weapon weapon; // Added a public field to store the associated weapon
@@ -42,7 +43,7 @@ public class ProjectileWeapon : Weapon
         float spawnAngle = GetSpawnAngle();
 
         // And spawn a copy of the projectile.
-        ProjectileWeapon prefab = Instantiate(
+        Projectile prefab = Instantiate(
             currentStats.projectilePrefab,
             owner.transform.position + (Vector3)GetSpawnOffset(spawnAngle),
             Quaternion.Euler(0f, 0f, spawnAngle)

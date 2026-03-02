@@ -10,8 +10,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Weapon Data", menuName = "2D Top-down Rogue-like/Weapon Data")]
 public class WeaponData : ItemData // Changed inheritance from ScriptableObject to ItemData
 {
-    public Sprite icon;
-    public int maxLevel;
+    // public Sprite icon;
+    // public int maxLevel;
 
     public string behaviour;
     public Weapon.Stats baseStats;

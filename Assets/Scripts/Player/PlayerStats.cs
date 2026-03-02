@@ -231,6 +231,8 @@ public class PlayerStats : MonoBehaviour
 
     void Awake()
     {
+        characterData = GetComponent<CharacterData>();
+
         if (CharacterSelector.instance != null)
         {
             characterData = CharacterSelector.GetData();
@@ -239,7 +241,6 @@ public class PlayerStats : MonoBehaviour
         else
         {
             Debug.LogWarning("CharacterSelector not found. Using default character data from this object.");
-            characterData = GetComponent<CharacterData>();
             if (characterData == null)
             {
                 // 기본값으로 테스트용 데이터 설정이 필요할 수 있음
@@ -249,7 +250,9 @@ public class PlayerStats : MonoBehaviour
         }
 
         inventory = GetComponent<PlayerInventory>();
-        collector = GetComponentInChildren<PlayerCollector>();
+        
+        //collector = GetComponentInChildren<PlayerCollector>();
+
         //Assign the variables
         baseStats = actualStats = characterData.stats;
         health = actualStats.maxHealth;
@@ -396,7 +399,7 @@ public class PlayerStats : MonoBehaviour
         if(!GameManager.instance.isGameOver)
         {
             GameManager.instance.AssignLevelReachedUI(level);
-            //GameManager.instance.AssignChosenWeaponAndPassiveItemUI(inventory.weaponSlotsUI, inventory.passiveItemSlotsUI);
+            GameManager.instance.AssignChosenWeaponAndPassiveItemUI(inventory.weaponSlots, inventory.passiveSlots);
             GameManager.instance.GameOver();
         }
 
