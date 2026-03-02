@@ -67,7 +67,7 @@ public class PlayerInventory : MonoBehaviour
     // Checks if the inventory has an item of a certaint type.
     public bool Has(ItemData type)
     {
-        return Get(type);
+        return Get(type) != null;
     }
 
     public Item Get(ItemData type)
@@ -159,7 +159,7 @@ public class PlayerInventory : MonoBehaviour
         int slotNum = -1;
 
         // Try to find an empty slot.
-        for(int i = 0; i < weaponSlots.Capacity; i++)
+        for(int i = 0; i < weaponSlots.Count; i++)
         {
             if(weaponSlots[i].IsEmpty())
             {
@@ -209,9 +209,9 @@ public class PlayerInventory : MonoBehaviour
         int slotNum = -1;
 
         // Try to find an empty slot.
-        for (int i = 0; i < weaponSlots.Capacity; i++)
+        for (int i = 0; i < passiveSlots.Count; i++)
         {
-            if (weaponSlots[i].IsEmpty())
+            if (passiveSlots[i].IsEmpty())
             {
                 slotNum = i;
                 break;
@@ -222,30 +222,34 @@ public class PlayerInventory : MonoBehaviour
         if (slotNum < 0) return slotNum;
 
         // Otherwise create the passive in the slot.
-        // Get the type of the passive we want to spawn.
-        Type weaponType = Type.GetType(data.behaviour);
+        // Get the type of the passive we want to spawn (optional subclass).
+        Type passiveType = Type.GetType(data.behaviour);
 
-        if (weaponType != null)
+        // Spawn the passive GameObject.
+        GameObject go = new GameObject(data.baseStats.name + " Passive");
+        Passive p;
+        if (passiveType != null && typeof(Passive).IsAssignableFrom(passiveType))
         {
-            // Spawn the passive GameObject.
-            GameObject go = new GameObject(data.baseStats.name + " Passive");
-            Passive p = go.AddComponent<Passive>();
-            p.Initialise(data);
-            p.transform.SetParent(transform); // Set the passive to be a child of the player
-            p.transform.localPosition = Vector2.zero;
-
-            //Assign the passive to the slot.
-            passiveSlots[slotNum].Assign(p);
-
-            // Close the level up UI if it is on.
-            if(GameManager.instance != null && GameManager.instance.choosingUpgrade)
-                GameManager.instance.EndLevelUP(); // Fixed method name
-
-            player.ReCalculateStats();
-            return slotNum;
+            p = (Passive)go.AddComponent(passiveType);
+        }
+        else
+        {
+            p = go.AddComponent<Passive>();
         }
 
-        return -1; // Ensure a value is returned in all code paths
+        p.Initialise(data);
+        p.transform.SetParent(transform); // Set the passive to be a child of the player
+        p.transform.localPosition = Vector2.zero;
+
+        //Assign the passive to the slot.
+        passiveSlots[slotNum].Assign(p);
+
+        // Close the level up UI if it is on.
+        if(GameManager.instance != null && GameManager.instance.choosingUpgrade)
+            GameManager.instance.EndLevelUP(); // Fixed method name
+
+        player.ReCalculateStats();
+        return slotNum;
     }
 
     // If we don't know what item is being added, this function will determine that.
@@ -258,11 +262,13 @@ public class PlayerInventory : MonoBehaviour
 
     public void LevelUpWeapon(int slotIndex, int upgradeIndex)
     {
-        if(weaponSlots.Count > slotIndex)
+        if(slotIndex < weaponSlots.Count)
         {
             Weapon weapon = weaponSlots[slotIndex].item as Weapon;
+            if (weapon == null)
+                return;
 
-            //Don't level up the weapon if it is already at max level.
+            // Don't level up the weapon if leveling fails (already at max, etc.).
             if(!weapon.DoLevelUp())
             {
                 Debug.LogWarning(string.Format("Failed to level up {0}", weapon.name));
@@ -345,24 +351,19 @@ public class PlayerInventory : MonoBehaviour
                     bool isLevelUp = false;
                     for (int i = 0; i < weaponSlots.Count; i++)
                     {
-                        if (weaponSlots[i].IsEmpty())
-                        {
-                            isLevelUp = false;
-                            break;
-                        }
                         Weapon w = weaponSlots[i].item as Weapon;
-                        if(w !=null && w.data == chosenWeaponUpgrade)
+                        if(w != null && w.data == chosenWeaponUpgrade)
                         {
-                            // If the weapon is already at the max level. do not allow upgrade.
+                            // If the weapon is already at the max level, do not allow upgrade.
                             if(chosenWeaponUpgrade.maxLevel <= w.currentLevel)
                             {
-                                //DisableUpgradeUI(upgradeOption);
-                                isLevelUp = false;
+                                DisableUpgradeUI(upgradeOption);
+                                isLevelUp = true;
                                 break;
                             }
 
-                            // Set the Event Listener, item and level description to be that of the next level
-                            upgradeOption.upgradeButton.onClick.AddListener(() => LevelUpWeapon(i,i)); // Apply button functionality
+                            int capturedSlot = i;
+                            upgradeOption.upgradeButton.onClick.AddListener(() => LevelUpWeapon(capturedSlot, capturedSlot)); // Apply button functionality
                             Weapon.Stats nextLevel = chosenWeaponUpgrade.GetLevelData(w.currentLevel + 1);
                             upgradeOption.upgradeDescriptionDisplay.text = nextLevel.description;
                             upgradeOption.upgradeNameDisplay.text = nextLevel.name;
@@ -376,12 +377,11 @@ public class PlayerInventory : MonoBehaviour
                     // upgrading an existing weapon.
                     if (!isLevelUp)
                     {
-                        upgradeOption.upgradeButton.onClick.AddListener(() => Add(chosenWeaponUpgrade)); // Apply button functionality
-                        upgradeOption.upgradeDescriptionDisplay.text = chosenWeaponUpgrade.baseStats.description; // Apply initial description
-                        upgradeOption.upgradeNameDisplay.text = chosenWeaponUpgrade.baseStats.name; // Apply initial name
-                        upgradeOption.upgradeIcon.sprite = chosenWeaponUpgrade.icon;
-
-
+                        WeaponData chosenWeaponLocal = chosenWeaponUpgrade;
+                        upgradeOption.upgradeButton.onClick.AddListener(() => Add(chosenWeaponLocal)); // Apply button functionality
+                        upgradeOption.upgradeDescriptionDisplay.text = chosenWeaponLocal.baseStats.description; // Apply initial description
+                        upgradeOption.upgradeNameDisplay.text = chosenWeaponLocal.baseStats.name; // Apply initial name
+                        upgradeOption.upgradeIcon.sprite = chosenWeaponLocal.icon;
                     }
                 }
             }
@@ -409,11 +409,12 @@ public class PlayerInventory : MonoBehaviour
                             // If the passive is already at the max level, do not allow upgrade.
                             if(chosenPassiveUpgrade.maxLevel <= p.currentLevel)
                             {
-                                //DisableUpgradeUI(upgradeOption);
-                                isLevelUp = false;
+                                DisableUpgradeUI(upgradeOption);
+                                isLevelUp = true;
                                 break;
                             }
-                            upgradeOption.upgradeButton.onClick.AddListener(() => LevelUpPassiveItem(i,i)); // Apply button functionality
+                            int capturedSlot = i;
+                            upgradeOption.upgradeButton.onClick.AddListener(() => LevelUpPassiveItem(capturedSlot, capturedSlot)); // Apply button functionality
                             Passive.Modifier nextLevel = chosenPassiveUpgrade.GetLevelData(p.currentLevel + 1);
                             upgradeOption.upgradeDescriptionDisplay.text = nextLevel.description;
                             upgradeOption.upgradeNameDisplay.text = nextLevel.name;
@@ -425,11 +426,12 @@ public class PlayerInventory : MonoBehaviour
 
                     if(!isLevelUp) // Spawn a new passive item
                     {
-                        upgradeOption.upgradeButton.onClick.AddListener(() => Add(chosenPassiveUpgrade)); // Apply button functionality
-                        Passive.Modifier nextLevel = chosenPassiveUpgrade.baseStats;
+                        PassiveData chosenPassiveLocal = chosenPassiveUpgrade;
+                        upgradeOption.upgradeButton.onClick.AddListener(() => Add(chosenPassiveLocal)); // Apply button functionality
+                        Passive.Modifier nextLevel = chosenPassiveLocal.baseStats;
                         upgradeOption.upgradeDescriptionDisplay.text = nextLevel.description; // Apply initial description
                         upgradeOption.upgradeNameDisplay.text = nextLevel.name; // Apply initial name
-                        upgradeOption.upgradeIcon.sprite = chosenPassiveUpgrade.icon;
+                        upgradeOption.upgradeIcon.sprite = chosenPassiveLocal.icon;
                     }
                 }
             }
