@@ -217,6 +217,7 @@ public class PlayerStats : MonoBehaviour
 
     public List<LevelRange> levelRanges;
 
+    PlayerCollector collector;
     PlayerInventory inventory;
     public int passiveItemIndex;
     public int weaponIndex;
@@ -251,10 +252,11 @@ public class PlayerStats : MonoBehaviour
 
         inventory = GetComponent<PlayerInventory>();
         
-        //collector = GetComponentInChildren<PlayerCollector>();
+        collector = GetComponentInChildren<PlayerCollector>();
 
         //Assign the variables
         baseStats = actualStats = characterData.stats;
+        collector.SetRadius(actualStats.magnet);
         health = actualStats.maxHealth;
 
         playerAnimator = GetComponent<PlayerAnimator>();
@@ -326,6 +328,7 @@ public class PlayerStats : MonoBehaviour
                 actualStats += p.GetBoosts();
             }
         }
+        collector.SetRadius(actualStats.magnet);
     }
 
     public void IncreaseExperience(int amount)
@@ -414,6 +417,8 @@ public class PlayerStats : MonoBehaviour
             {
                 CurrentHealth = actualStats.maxHealth;
             }
+
+            UpdateHealthBar();
         }
     }
 
@@ -426,6 +431,8 @@ public class PlayerStats : MonoBehaviour
             {
                 CurrentHealth = actualStats.maxHealth;
             }
+
+            UpdateHealthBar();
         }
     }
     [System.Obsolete("Old function that is kept to maintain compativibility with the InventoryManager. Will be removed soon.")]
