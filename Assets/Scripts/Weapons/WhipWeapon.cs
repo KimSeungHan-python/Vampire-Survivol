@@ -37,6 +37,12 @@ public class WhipWeapon : ProjectileWeapon
             currentSpawnYOffset
         );
 
+        // If there is a proc effect, play it on the player.
+        if (currentStats.procEffect)
+        {
+            Destroy(Instantiate(currentStats.procEffect, owner.transform), 5f);
+        }
+
         // And spawn a copy of the projectile.
         Projectile prefab = Instantiate(
             currentStats.projectilePrefab,
